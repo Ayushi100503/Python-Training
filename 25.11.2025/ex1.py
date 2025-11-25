@@ -1,5 +1,5 @@
 nums = [23, 89, 12, 78, 55, 42]
-max1 = max2 = float("-inf")
+max1 = max2 = -1
 
 for n in nums:
     if n>max1:
@@ -7,4 +7,4 @@ for n in nums:
         max1 = n
     elif n>max2 and n!= max1:
         max2 = n
-print("secon d largest is: ",max2)
+print("second largest is: ",max2)
