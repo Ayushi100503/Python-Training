@@ -1,6 +1,6 @@
 from datetime import datetime
 with open("log.txt", "w") as f:
-    f.write(f"{datetime.now()}")
+    f.write(f"{datetime.now()} Application Started\n")
 
 print("Contents of log.txt are:")
 
