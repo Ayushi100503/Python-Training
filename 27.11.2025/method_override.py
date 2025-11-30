@@ -19,6 +19,7 @@ n1.send("Your order is confirmed")
 
 n2 = smsnotification()
 n2.send("Your OTP is 1234")
+
 n3 = pushnotification()
 n3.send("You have a new message")
 
