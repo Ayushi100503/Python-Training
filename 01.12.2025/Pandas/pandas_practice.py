@@ -13,3 +13,14 @@ print(df.tail(2))
 print(df.shape)
 print(df.columns)
 print(df.describe())
+print(df["Name"])
+print(df[["Name", "Marks"]])
+#filters
+high_scorers = df[df["Marks"]>70]
+print(high_scorers)
+filtered = df[(df["Marks"]>70) & (df["Age"]>22)]
+print(filtered)
+df["Results"] = df["Marks"].apply(lambda x: "Pass" if x >= 60 else "Fail")
+print(df)
+sorted_df = df.sort_values(by="Marks", ascending=False)
+print(sorted_df)
