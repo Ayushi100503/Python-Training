@@ -1,9 +1,9 @@
-filename = "output.txt"
+path = input("Please enter the file path: ")
 try:
     text = input("Enter text to write: ")
-    with open(filename, "w") as file:
-        file.write(text)
-except PermissionError:
-    print("Permission denied")
+    with open(path, "w") as f:
+        f.write(text)
+except FileNotFoundError:
+    print("File not found")
 finally:
     print("Success")
