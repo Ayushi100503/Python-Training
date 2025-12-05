@@ -1,7 +1,4 @@
 
--- ------------------------------------------
--- Setup: Database + Table + Sample Data
--- ------------------------------------------
 CREATE DATABASE IF NOT EXISTS subscription_app;
 USE subscription_app;
 
@@ -16,7 +13,7 @@ CREATE TABLE subscriptions (
   plan_type VARCHAR(20) NOT NULL  -- Monthly, Quarterly, Yearly
 );
 
--- Sample data: includes expired, active, expiring soon, due today, multiple plan types
+
 INSERT INTO subscriptions (sub_id, customer_name, start_date, expiry_date, created_at, plan_type) VALUES
   (1,  'Aisha Khan',   '2024-12-15', '2025-01-15', '2024-12-15 10:30:00', 'Monthly'),
   (2,  'Rahul Sharma', '2025-01-05', '2025-02-05', '2025-01-05 09:45:00', 'Monthly'),
@@ -26,24 +23,23 @@ INSERT INTO subscriptions (sub_id, customer_name, start_date, expiry_date, creat
   (6,  'Neha Gupta',   '2024-06-10', '2025-06-10', '2024-06-10 08:15:00', 'Yearly'),
  
  
--- SQL Tasks (1–5): Ready-to-run queries
--- ------------------------------------------
+-- SQL Tasks (1–5):
 
--- 1) Subscriptions expiring within the next 10 days (including today)
+-- 1) 
 SELECT * FROM subscriptions
 WHERE DATEDIFF(expiry_date, CURDATE()) BETWEEN 0 AND 10;
 
--- 2) Customers who subscribed in the current calendar month
+-- 2) 
 SELECT * FROM subscriptions
 WHERE YEAR(start_date) = YEAR(CURDATE())
   AND MONTH(start_date) = MONTH(CURDATE());
 
--- 3) All yearly plans sorted by expiry_date
+-- 3) 
 SELECT * FROM subscriptions
 WHERE plan_type = 'Yearly'
 ORDER BY expiry_date ASC;
 
--- 4) Subscriptions lasting more than 30 days (Quarterly/Yearly)
+-- 4) 
 -- Method A: by plan type
 SELECT * FROM subscriptions
 WHERE plan_type IN ('Quarterly', 'Yearly');

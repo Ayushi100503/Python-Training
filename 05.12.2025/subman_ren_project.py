@@ -1,30 +1,20 @@
-
-# subscription_analytics.py
-# End-to-end: Setup + Extract + Transform + Analytics + CSV export
-
 import pymysql
 import pandas as pd
 from datetime import datetime, date
 import sys
 
-# -------------------------------
-# Configuration
-# -------------------------------
 MYSQL_HOST = "localhost"
 MYSQL_USER = "root"
-MYSQL_PASSWORD = "Aayyuusshhii@01"   # <- updated to your password
+MYSQL_PASSWORD = "Aayyuusshhii@01"  
 DB_NAME = "subscription_app"
 
-# Optional pricing (for projections)
+
 PRICE_MAP = {
     "Monthly": 1000,
     "Quarterly": 2700,
     "Yearly": 10000
 }
 
-# -------------------------------
-# Helper: connect (server level)
-# -------------------------------
 def connect_server():
     return pymysql.connect(
         host=MYSQL_HOST,
@@ -33,9 +23,6 @@ def connect_server():
         autocommit=True
     )
 
-# -------------------------------
-# Helper: connect (database level)
-# -------------------------------
 def connect_db():
     return pymysql.connect(
         host=MYSQL_HOST,
@@ -45,9 +32,7 @@ def connect_db():
         autocommit=True
     )
 
-# -------------------------------
-# Setup: Create DB, table, seed data
-# -------------------------------
+
 def setup_database():
     conn = connect_server()
     try:
@@ -81,9 +66,7 @@ def setup_database():
     finally:
         conn.close()
 
-# -------------------------------
-# Extract: Load into DataFrame
-# -------------------------------
+
 def load_dataframe():
     conn = connect_db()
     try:
@@ -93,26 +76,23 @@ def load_dataframe():
     finally:
         conn.close()
 
-# -------------------------------
-# Transform: Dates & Statuses
-# -------------------------------
+
 def transform_dates_and_status(df: pd.DataFrame) -> pd.DataFrame:
-    # Convert date fields to datetime
+   
     df["start_date"]  = pd.to_datetime(df["start_date"])
     df["expiry_date"] = pd.to_datetime(df["expiry_date"])
     df["created_at"]  = pd.to_datetime(df["created_at"])
 
-    # Required: Convert created_at to "DD-MM-YYYY HH:MM"
+   
     df["created_at"] = df["created_at"].dt.strftime("%d-%m-%Y %H:%M")
 
-    # Today normalized to remove time; ensures integer day diffs
+    
     today_ts = pd.Timestamp.today().normalize()
 
-    # Days left and age in days
+   
     df["days_left"] = (df["expiry_date"] - today_ts).dt.days
     df["age_days"]  = (today_ts - df["start_date"]).dt.days
 
-    # Status classification
     def status(row):
         if row["days_left"] < 0:
             return "Expired"
@@ -123,20 +103,18 @@ def transform_dates_and_status(df: pd.DataFrame) -> pd.DataFrame:
 
     df["status"] = df.apply(status, axis=1)
 
-    # Days overdue (only for expired)
+ 
     df["days_overdue"] = df["days_left"].apply(lambda x: abs(x) if x < 0 else 0)
 
-    # Next billing date = expiry_date (renewal due date)
+   
     df["next_billing_date"] = df["expiry_date"].dt.date
 
-    # Customers whose billing is due today
+   
     billing_due_today = df[df["next_billing_date"] == date.today()]["customer_name"].tolist()
 
     return df, billing_due_today
 
-# -------------------------------
-# Analytics & Business Reports
-# -------------------------------
+
 def run_analytics(df: pd.DataFrame):
     print("\n--- Report 1: Status Counts (Active vs ExpiringSoon vs Expired) ---")
     print(df["status"].value_counts())
@@ -147,7 +125,7 @@ def run_analytics(df: pd.DataFrame):
     print("\n--- Report 3: Overdue Subscriptions (Expired) ---")
     print(df[df["days_left"] < 0][["sub_id","customer_name","plan_type","expiry_date","days_left","days_overdue"]])
 
-    # Revenue projection mapping
+  
     df["renewal_value"] = df["plan_type"].map(PRICE_MAP)
 
     print("\n--- Report 4: Next 30-Day Revenue Forecast ---")
@@ -178,9 +156,7 @@ def run_analytics(df: pd.DataFrame):
         "grouped_df": grouped
     }
 
-# -------------------------------
-# Export: Final CSV
-# -------------------------------
+
 def export_csv(df: pd.DataFrame, filename: str = "subscription_report.csv"):
     # For export, ensure all columns are serializable
     out = df.copy()
@@ -193,9 +169,7 @@ def export_csv(df: pd.DataFrame, filename: str = "subscription_report.csv"):
     out.to_csv(filename, index=False)
     print(f"\nCSV exported: {filename}")
 
-# -------------------------------
-# Main: Orchestrate
-# -------------------------------
+
 def main():
     print("Setting up database and loading sample data...")
     setup_database()
