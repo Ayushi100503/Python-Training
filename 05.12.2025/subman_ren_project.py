@@ -73,13 +73,6 @@ def setup_database():
                 (3,  'Imran Ali',    '2025-02-10', '2025-03-10', '2025-02-10 14:12:00', 'Monthly'),
                 (4,  'Meera Iyer',   '2025-03-01', '2025-04-01', '2025-03-01 17:05:00', 'Monthly'),
                 (5,  'Sanjay Patel', '2025-02-20', '2025-05-21', '2025-02-20 13:00:00', 'Quarterly'),
-                (6,  'Neha Gupta',   '2024-06-10', '2025-06-10', '2024-06-10 08:15:00', 'Yearly'),
-                (7,  'Arjun Mehta',  '2025-11-25', '2025-12-25', '2025-11-25 11:00:00', 'Monthly'),
-                (8,  'Priya Nair',   '2025-12-01', '2025-12-31', '2025-12-01 12:00:00', 'Monthly'),
-                (9,  'Ravi Kumar',   '2025-11-30', '2025-12-07', '2025-11-30 09:00:00', 'Monthly'),
-                (10, 'Sneha Roy',    '2025-01-10', '2026-01-10', '2025-01-10 08:00:00', 'Yearly'),
-                (11, 'Vikram Singh', '2025-10-01', '2025-12-30', '2025-10-01 10:15:00', 'Quarterly'),
-                (12, 'Kiran Das',    '2025-11-05', '2025-12-05', '2025-11-05 10:45:00', 'Monthly')
             ]
             cur.executemany("""
                 INSERT INTO subscriptions (sub_id, customer_name, start_date, expiry_date, created_at, plan_type)
