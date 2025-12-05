@@ -36,7 +36,7 @@ def borrow_book():
     conn = db()
     try:
         with conn.cursor() as cur:
-            # Check availability
+
             cur.execute("SELECT copies_available FROM books WHERE book_id=%s", (book_id,))
             row = cur.fetchone()
             if not row:
@@ -44,7 +44,7 @@ def borrow_book():
             if row[0] <= 0:
                 print("❌ No copies available."); return
 
-            # Create borrow + decrement
+
             cur.execute("""
                 INSERT INTO borrows (member_id, book_id, due_date, status)
                 VALUES (%s, %s, %s, 'Borrowed')
@@ -59,7 +59,7 @@ def return_book():
     conn = db()
     try:
         with conn.cursor() as cur:
-            # Check borrow
+
             cur.execute("SELECT book_id, status FROM borrows WHERE borrow_id=%s", (borrow_id,))
             row = cur.fetchone()
             if not row:
@@ -68,7 +68,7 @@ def return_book():
             if status == "Returned":
                 print("ℹ️ Already returned."); return
 
-            # Mark returned + increment copies
+
             cur.execute("UPDATE borrows SET status='Returned', return_date=CURRENT_DATE WHERE borrow_id=%s", (borrow_id,))
             cur.execute("UPDATE books SET copies_available = copies_available + 1 WHERE book_id=%s", (book_id,))
         print("✅ Book returned.")
