@@ -1,3 +1,5 @@
+# Python Training exercises
+
 This repository contains Python training files created during learning an d practice sessions.
 
 ## Structure
